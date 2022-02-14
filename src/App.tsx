@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { LoadingLayer } from "components/LoadingLayer";
 import React from "react";
 import { HashRouter, Redirect, Route } from "react-router-dom";
 import "./App.scss";
@@ -16,6 +17,7 @@ function App() {
           </Route>
           {/* <Route path="/app" component={app} /> */}
         </HashRouter>
+        <LoadingLayer />
       </div>
     </div>
   );
