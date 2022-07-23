@@ -10,7 +10,9 @@ import { Setting } from "pages/Setting";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { HashRouter, Redirect, Route } from "react-router-dom";
-import { setIsLogin, setUserEmail } from "store/auth";
+import { GetUserInfoResponse } from "scripts/responses";
+import { api } from "services/api";
+import { setGrade, setIsLogin, setUserEmail } from "store/auth";
 import "./App.scss";
 
 function App() {
@@ -21,10 +23,23 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged(() => {
-      dispatch(setIsLogin(!isNil(auth.currentUser)));
-      dispatch(setUserEmail(auth.currentUser?.email ?? ""));
+      onAuthStateChanged();
     });
   }, []);
+
+  const onAuthStateChanged = async () => {
+    dispatch(setIsLogin(!isNil(auth.currentUser)));
+    dispatch(setUserEmail(auth.currentUser?.email ?? ""));
+
+    // 사용자 등급 받아오기
+    const r = await api.get<GetUserInfoResponse>(
+      "https://1mkyskvrt7.execute-api.ap-northeast-2.amazonaws.com/default/mt-get-userinfo"
+    );
+
+    if (r.status === 200) {
+      dispatch(setGrade(r.data.grade));
+    }
+  };
 
   return (
     <div className="App">
