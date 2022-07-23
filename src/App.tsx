@@ -6,6 +6,7 @@ import { isNil } from "lodash";
 import { Bot } from "pages/Bot";
 import { Dashboard } from "pages/Dashboard";
 import { Login } from "pages/Login";
+import { Setting } from "pages/Setting";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { HashRouter, Redirect, Route } from "react-router-dom";
@@ -36,6 +37,7 @@ function App() {
           </Route>
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/bot" component={Bot} />
+          <Route path="/setting" component={Setting} />
           <Route path="/login" component={Login} />
         </HashRouter>
         <LoadingLayer />

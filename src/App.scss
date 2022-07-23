@@ -14,4 +14,17 @@
       border: 1px solid lightgrey;
     }
   }
+
+  // common
+  .card {
+    text-align: left;
+  }
+
+  .icon-btn {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
 }

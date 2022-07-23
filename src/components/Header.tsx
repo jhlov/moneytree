@@ -26,6 +26,7 @@ const Header = () => {
           <Nav className="me-auto">
             <Nav.Link href="#dashboard">dashboard</Nav.Link>
             <Nav.Link href="#bot">bot</Nav.Link>
+            <Nav.Link href="#setting">setting</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
             {isLogin ? (
