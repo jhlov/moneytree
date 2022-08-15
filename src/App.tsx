@@ -13,6 +13,7 @@ import { HashRouter, Redirect, Route } from "react-router-dom";
 import { GetUserInfoResponse } from "scripts/responses";
 import { api } from "services/api";
 import { setGrade, setIsLogin, setUserEmail } from "store/auth";
+import { setKIAppKey, setKIAppSecret } from "store/config";
 import "./App.scss";
 
 function App() {
@@ -38,6 +39,10 @@ function App() {
 
     if (r.status === 200) {
       dispatch(setGrade(r.data.grade));
+      dispatch(setKIAppKey(r.data.KIAppKey));
+      dispatch(setKIAppSecret(r.data.KIAppSecret));
+    } else {
+      alert(r.data.error);
     }
   };
 

@@ -20,8 +20,11 @@ const Setting = () => {
 
   useEffect(() => {
     setCurKIAppKey(KIAppKey);
+  }, [KIAppKey]);
+
+  useEffect(() => {
     setCurKIAppSecret(KIAppSecret);
-  }, []);
+  }, [KIAppSecret]);
 
   const onCancel = () => {
     setIsEdit(false);
@@ -74,7 +77,7 @@ const Setting = () => {
               <Form.Control
                 className="ki-app-secret"
                 as="textarea"
-                rows={4}
+                rows={5}
                 value={curKIAppSecret}
                 onChange={e => setCurKIAppSecret(e.target.value)}
                 disabled={!isEdit}

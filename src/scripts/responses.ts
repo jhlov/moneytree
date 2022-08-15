@@ -2,6 +2,8 @@ import { Grade } from "./types";
 
 export interface GetUserInfoResponse {
   grade: Grade;
+  KIAppKey: string;
+  KIAppSecret: string;
   error?: string;
 }
 
