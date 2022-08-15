@@ -45,6 +45,10 @@ function App() {
       } else {
         alert(r.data.error);
       }
+    } else {
+      dispatch(setGrade("NOT_LOGIN"));
+      dispatch(setKIAppKey(""));
+      dispatch(setKIAppSecret(""));
     }
   };
 
