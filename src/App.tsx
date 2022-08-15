@@ -32,17 +32,19 @@ function App() {
     dispatch(setIsLogin(!isNil(auth.currentUser)));
     dispatch(setUserEmail(auth.currentUser?.email ?? ""));
 
-    // 사용자 등급 받아오기
-    const r = await api.get<GetUserInfoResponse>(
-      "https://1mkyskvrt7.execute-api.ap-northeast-2.amazonaws.com/default/mt-get-userinfo"
-    );
+    if (auth.currentUser?.uid && auth.currentUser?.email) {
+      // 사용자 등급 받아오기
+      const r = await api.get<GetUserInfoResponse>(
+        "https://1mkyskvrt7.execute-api.ap-northeast-2.amazonaws.com/default/mt-get-userinfo"
+      );
 
-    if (r.status === 200) {
-      dispatch(setGrade(r.data.grade));
-      dispatch(setKIAppKey(r.data.KIAppKey));
-      dispatch(setKIAppSecret(r.data.KIAppSecret));
-    } else {
-      alert(r.data.error);
+      if (r.status === 200) {
+        dispatch(setGrade(r.data.grade));
+        dispatch(setKIAppKey(r.data.KIAppKey));
+        dispatch(setKIAppSecret(r.data.KIAppSecret));
+      } else {
+        alert(r.data.error);
+      }
     }
   };
 

@@ -23,6 +23,9 @@ export const api = {
     try {
       const r = await axios.get<T>(newUrl, headers);
       return Promise.resolve(r);
+    } catch (e) {
+      alert((e as any).response.data.error);
+      return Promise.reject();
     } finally {
       store.dispatch(setLoading(false));
     }
@@ -42,6 +45,9 @@ export const api = {
     try {
       const r = await axios.put<T>(url, data, headers);
       return Promise.resolve(r);
+    } catch (e) {
+      alert((e as any).response.data.error);
+      return Promise.reject();
     } finally {
       store.dispatch(setLoading(false));
     }
