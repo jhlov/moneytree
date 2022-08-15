@@ -26,5 +26,24 @@ export const api = {
     } finally {
       store.dispatch(setLoading(false));
     }
+  },
+  put: async <T>(url: string, data?: object) => {
+    store.dispatch(setLoading(true));
+
+    const auth = getAuth();
+
+    const headers = {
+      headers: {
+        id: auth.currentUser?.uid ?? "",
+        email: auth.currentUser?.email ?? ""
+      }
+    };
+
+    try {
+      const r = await axios.put<T>(url, data, headers);
+      return Promise.resolve(r);
+    } finally {
+      store.dispatch(setLoading(false));
+    }
   }
 };

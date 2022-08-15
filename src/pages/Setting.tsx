@@ -1,13 +1,43 @@
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store";
+import { updateUserInfo } from "store/config";
+import "./Setting.scss";
 
 const Setting = () => {
+  const dispatch = useDispatch();
+
+  const KIAppKey = useSelector((state: RootState) => state.config.KIAppKey);
+  const KIAppSecret = useSelector(
+    (state: RootState) => state.config.KIAppSecret
+  );
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [KIAppKey, setKIAppKey] = useState<string>("");
+  const [curKIAppKey, setCurKIAppKey] = useState<string>("");
+  const [curKIAppSecret, setCurKIAppSecret] = useState<string>("");
+
+  useEffect(() => {
+    setCurKIAppKey(KIAppKey);
+    setCurKIAppSecret(KIAppSecret);
+  }, []);
+
+  const onCancel = () => {
+    setIsEdit(false);
+    setCurKIAppKey(KIAppKey);
+    setCurKIAppSecret(KIAppSecret);
+  };
+
+  const onApply = async () => {
+    setIsEdit(false);
+    dispatch(
+      updateUserInfo({ KIAppKey: curKIAppKey, KIAppSecret: curKIAppSecret })
+    );
+  };
 
   return (
-    <Row className="justify-content-center pt-5">
+    <Row className="setting justify-content-center pt-5">
       <Col xs="12" md="10" lg="8" xl="6">
         <Card>
           <Card.Header className="d-flex align-items-center">
@@ -22,34 +52,43 @@ const Setting = () => {
           </Card.Header>
           <Card.Body>
             <Form.Group className="mb-3">
-              <Form.Label>한국투자증권 App Key</Form.Label>
+              <Form.Label>
+                한국투자증권 App Key{" "}
+                <Button
+                  variant="outline-secondary ms-2"
+                  size="sm"
+                  disabled={!curKIAppKey || !curKIAppSecret}
+                >
+                  TEST
+                </Button>
+              </Form.Label>
               <Form.Control
                 type="text"
-                value={KIAppKey}
-                onChange={e => setKIAppKey(e.target.value)}
+                value={curKIAppKey}
+                onChange={e => setCurKIAppKey(e.target.value)}
                 disabled={!isEdit}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>한국투자증권 App Secret</Form.Label>
               <Form.Control
+                className="ki-app-secret"
                 as="textarea"
-                rows={3}
-                value={KIAppKey}
-                onChange={e => setKIAppKey(e.target.value)}
+                rows={4}
+                value={curKIAppSecret}
+                onChange={e => setCurKIAppSecret(e.target.value)}
                 disabled={!isEdit}
               />
             </Form.Group>
           </Card.Body>
           {isEdit && (
             <Card.Footer className="text-center">
-              <Button
-                variant="outline-secondary me-2"
-                onClick={() => setIsEdit(false)}
-              >
+              <Button variant="outline-secondary me-2" onClick={onCancel}>
                 취소
               </Button>
-              <Button variant="primary">적용</Button>
+              <Button variant="primary" onClick={onApply}>
+                적용
+              </Button>
             </Card.Footer>
           )}
         </Card>
