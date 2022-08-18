@@ -24,7 +24,7 @@ export const api = {
       const r = await axios.get<T>(newUrl, headers);
       return Promise.resolve(r);
     } catch (e) {
-      alert((e as any).response.data.error);
+      alert((e as any).response?.data.error ?? (e as any).message);
       return Promise.reject();
     } finally {
       store.dispatch(setLoading(false));
@@ -46,7 +46,29 @@ export const api = {
       const r = await axios.put<T>(url, data, headers);
       return Promise.resolve(r);
     } catch (e) {
-      alert((e as any).response.data.error);
+      alert((e as any).response?.data.error ?? (e as any).message);
+      return Promise.reject();
+    } finally {
+      store.dispatch(setLoading(false));
+    }
+  },
+  post: async <T>(url: string, data?: object) => {
+    store.dispatch(setLoading(true));
+
+    const auth = getAuth();
+
+    const headers = {
+      headers: {
+        id: auth.currentUser?.uid ?? "",
+        email: auth.currentUser?.email ?? ""
+      }
+    };
+
+    try {
+      const r = await axios.post<T>(url, data, headers);
+      return Promise.resolve(r);
+    } catch (e) {
+      alert((e as any).response?.data.error ?? (e as any).message);
       return Promise.reject();
     } finally {
       store.dispatch(setLoading(false));

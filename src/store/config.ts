@@ -21,7 +21,6 @@ export const updateUserInfo = createAsyncThunk(
     KIAppKey: string;
     KIAppSecret: string;
   }) => {
-    console.log("updateUserInfo", KIAppKey, KIAppSecret);
     const r = await api.put<UpdateUserInfoResponse>(
       "https://y7o6ds9rka.execute-api.ap-northeast-2.amazonaws.com/default/mt-update-userinfo",
       {
@@ -30,7 +29,7 @@ export const updateUserInfo = createAsyncThunk(
       }
     );
 
-    return r;
+    return r.data;
   }
 );
 
@@ -48,12 +47,12 @@ export const config = createSlice({
   extraReducers: builder => {
     builder.addCase(updateUserInfo.fulfilled, (state, action) => {
       console.log("updateUserInfo");
-      if (action.payload.status === 200) {
-        state.KIAppKey = action.payload.data.KIAppKey;
-        state.KIAppSecret = action.payload.data.KIAppSecret;
-        alert("환경설정 수정 성공");
+      if (action.payload.error) {
+        alert(action.payload.error);
       } else {
-        alert(action.payload.data.error);
+        state.KIAppKey = action.payload.KIAppKey;
+        state.KIAppSecret = action.payload.KIAppSecret;
+        alert("환경설정 수정 성공");
       }
     });
   }

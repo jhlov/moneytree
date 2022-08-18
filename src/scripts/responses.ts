@@ -12,3 +12,7 @@ export interface UpdateUserInfoResponse {
   KIAppSecret: string;
   error?: string;
 }
+
+export interface TestKIResponse {
+  error?: string;
+}

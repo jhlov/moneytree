@@ -2,6 +2,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { TestKIResponse } from "scripts/responses";
+import { api } from "services/api";
 import { RootState } from "store";
 import { updateUserInfo } from "store/config";
 import "./Setting.scss";
@@ -39,6 +41,22 @@ const Setting = () => {
     );
   };
 
+  const onClickTestKI = async () => {
+    const r = await api.post<TestKIResponse>(
+      "https://c4z8mtlrqa.execute-api.ap-northeast-2.amazonaws.com/default/mt-test-ki",
+      {
+        KIAppKey: curKIAppKey,
+        KIAppSecret: curKIAppSecret
+      }
+    );
+
+    if (r.status === 200) {
+      alert("테스트 통신에 성공했습니다.");
+    } else {
+      alert(`error. ${r.data.error}`);
+    }
+  };
+
   return (
     <Row className="setting justify-content-center pt-5">
       <Col xs="12" md="10" lg="8" xl="6">
@@ -61,6 +79,7 @@ const Setting = () => {
                   variant="outline-secondary ms-2"
                   size="sm"
                   disabled={!curKIAppKey || !curKIAppSecret}
+                  onClick={onClickTestKI}
                 >
                   TEST
                 </Button>

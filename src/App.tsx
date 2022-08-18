@@ -40,8 +40,8 @@ function App() {
 
       if (r.status === 200) {
         dispatch(setGrade(r.data.grade));
-        dispatch(setKIAppKey(r.data.KIAppKey));
-        dispatch(setKIAppSecret(r.data.KIAppSecret));
+        dispatch(setKIAppKey(r.data.KIAppKey ?? ""));
+        dispatch(setKIAppSecret(r.data.KIAppSecret ?? ""));
       } else {
         alert(r.data.error);
       }
