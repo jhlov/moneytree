@@ -58,7 +58,7 @@ const Setting = () => {
   };
 
   return (
-    <Row className="setting justify-content-center pt-5">
+    <Row className="setting justify-content-center">
       <Col xs="12" md="10" lg="8" xl="6">
         <Card>
           <Card.Header className="d-flex align-items-center">

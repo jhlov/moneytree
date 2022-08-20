@@ -58,13 +58,15 @@ function App() {
         {/* todo */}
         <HashRouter>
           <Header />
-          <Route path="/" exact>
-            <Redirect to="/dashboard" />
-          </Route>
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/bot" component={Bot} />
-          <Route path="/setting" component={Setting} />
-          <Route path="/login" component={Login} />
+          <div className="py-4">
+            <Route path="/" exact>
+              <Redirect to="/dashboard" />
+            </Route>
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/bot" component={Bot} />
+            <Route path="/setting" component={Setting} />
+            <Route path="/login" component={Login} />
+          </div>
         </HashRouter>
         <LoadingLayer />
       </div>
