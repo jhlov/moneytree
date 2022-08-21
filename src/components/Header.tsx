@@ -2,11 +2,12 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { getAuth } from "firebase/auth";
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Badge, Container, Nav, Navbar } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { useSelector } from "react-redux";
 import { RootState } from "store";
+import "./Header.scss";
 
 const Header = () => {
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
@@ -20,7 +21,12 @@ const Header = () => {
   return (
     <Navbar expand="sm">
       <Container>
-        <Navbar.Brand href="#dashboard">moneytree</Navbar.Brand>
+        <Navbar.Brand href="#dashboard" className="position-relative">
+          moneytree
+          <Badge className="beta-badge" bg="danger">
+            BETA
+          </Badge>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
