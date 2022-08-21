@@ -14,6 +14,7 @@ export interface Bot {
 }
 
 export interface NewBot {
+  account: string;
   type: BotType;
   name: string;
   seed: number;

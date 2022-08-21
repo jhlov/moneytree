@@ -1,6 +1,14 @@
 import { ErrorInfo } from "tui-grid/types/store/column";
 
-export const getGridErrorStr = (errorInfo: ErrorInfo) => {
+export const getKIAccountWithDash = (account: string): string => {
+  if (8 < account.length) {
+    return `${account.substring(0, 8)}-${account.substring(8)}`;
+  }
+
+  return account;
+};
+
+export const getGridErrorStr = (errorInfo: ErrorInfo): string => {
   const { code } = errorInfo;
 
   if (code === "REQUIRED") {

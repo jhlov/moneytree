@@ -7,6 +7,7 @@ interface InitialState {
 }
 
 const newBotInitialState: NewBot = {
+  account: "",
   type: "IBv2.1",
   name: "",
   seed: 1000,

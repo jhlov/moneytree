@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RemoveAccountRenderer } from "scripts/classes";
 import { Account } from "scripts/interfaces";
 import { TestKIResponse } from "scripts/responses";
-import { getGridErrorStr } from "scripts/utils";
+import { getGridErrorStr, getKIAccountWithDash } from "scripts/utils";
 import { api } from "services/api";
 import { RootState } from "store";
 import { updateUserInfo } from "store/config";
@@ -55,12 +55,7 @@ const Setting = () => {
           unique: true
         },
         formatter: props => {
-          const valueStr = props.value?.toString() ?? "";
-          if (8 < valueStr.length) {
-            return `${valueStr.substring(0, 8)}-${valueStr.substring(8)}`;
-          }
-
-          return props.value?.toString() ?? "";
+          return getKIAccountWithDash(props.value as string);
         }
       },
       {
