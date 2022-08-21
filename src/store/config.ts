@@ -22,7 +22,7 @@ export const updateUserInfo = createAsyncThunk(
     KIAppKey,
     KIAppSecret
   }: {
-    KIAccounts: Account[];
+    KIAccounts: Partial<Account>[];
     KIAppKey: string;
     KIAppSecret: string;
   }) => {

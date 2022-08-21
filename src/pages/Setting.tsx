@@ -4,6 +4,7 @@ import { cloneDeep, isEmpty, pick } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { RemoveAccountRenderer } from "scripts/classes";
 import { Account } from "scripts/interfaces";
 import { TestKIResponse } from "scripts/responses";
 import { getGridErrorStr } from "scripts/utils";
@@ -25,11 +26,21 @@ const Setting = () => {
   );
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [curKIAccounts, setCurKIAccounts] = useState<Account[]>([]);
+  const [curKIAccounts, setCurKIAccounts] = useState<Partial<Account>[]>([]);
   const [curKIAppKey, setCurKIAppKey] = useState<string>("");
   const [curKIAppSecret, setCurKIAppSecret] = useState<string>("");
 
   const gridRef = useRef<Grid>(null);
+
+  const onClickRemoveAccount = (rowKey: number) => {
+    const gridData: Account[] =
+      (gridRef.current?.getInstance().getData() as unknown as Account[]) ?? [];
+    setCurKIAccounts(
+      gridData
+        .map(data => pick(data, ["account", "name"]))
+        .filter((_, i) => i !== rowKey)
+    );
+  };
 
   const columns: OptColumn[] = useMemo(() => {
     return [
@@ -56,6 +67,19 @@ const Setting = () => {
         name: "name",
         header: "계좌 별명",
         editor: isEdit ? "text" : undefined
+      },
+      {
+        name: "remove",
+        header: "삭제",
+        width: 40,
+        align: "center",
+        hidden: !isEdit,
+        renderer: {
+          type: RemoveAccountRenderer,
+          options: {
+            handleRemove: onClickRemoveAccount
+          }
+        }
       }
     ];
   }, [isEdit]);
@@ -117,9 +141,7 @@ const Setting = () => {
       (gridRef.current?.getInstance().getData() as unknown as Account[]) ?? [];
     dispatch(
       updateUserInfo({
-        KIAccounts: gridData.map(
-          data => pick(data, ["account", "name"]) as Account
-        ),
+        KIAccounts: gridData.map(data => pick(data, ["account", "name"])),
         KIAppKey: curKIAppKey,
         KIAppSecret: curKIAppSecret
       })
