@@ -1,5 +1,11 @@
 export type BotType = "IBv1" | "IBv2" | "IBv2.1";
 
+export interface Account {
+  id?: number;
+  account: string;
+  name: string;
+}
+
 export interface Bot {
   type: BotType;
   name: string;

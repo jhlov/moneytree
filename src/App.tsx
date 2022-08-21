@@ -7,13 +7,13 @@ import { Bot } from "pages/Bot";
 import { Dashboard } from "pages/Dashboard";
 import { Login } from "pages/Login";
 import { Setting } from "pages/Setting";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { HashRouter, Redirect, Route } from "react-router-dom";
 import { GetUserInfoResponse } from "scripts/responses";
 import { api } from "services/api";
 import { setGrade, setIsLogin, setUserEmail } from "store/auth";
-import { setKIAppKey, setKIAppSecret } from "store/config";
+import { setKIAccounts, setKIAppKey, setKIAppSecret } from "store/config";
 import "./App.scss";
 
 function App() {
@@ -40,6 +40,7 @@ function App() {
 
       if (r.status === 200) {
         dispatch(setGrade(r.data.grade));
+        dispatch(setKIAccounts(r.data.KIAccounts ?? []));
         dispatch(setKIAppKey(r.data.KIAppKey ?? ""));
         dispatch(setKIAppSecret(r.data.KIAppSecret ?? ""));
       } else {

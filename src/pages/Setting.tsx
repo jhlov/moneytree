@@ -1,24 +1,75 @@
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useEffect, useState } from "react";
+import Grid from "@toast-ui/react-grid";
+import { cloneDeep, isEmpty, pick } from "lodash";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { Account } from "scripts/interfaces";
 import { TestKIResponse } from "scripts/responses";
+import { getGridErrorStr } from "scripts/utils";
 import { api } from "services/api";
 import { RootState } from "store";
 import { updateUserInfo } from "store/config";
+import "tui-grid/dist/tui-grid.css";
+import { OptColumn } from "tui-grid/types/options";
+import { InvalidRow } from "tui-grid/types/store/data";
 import "./Setting.scss";
 
 const Setting = () => {
   const dispatch = useDispatch();
 
+  const KIAccounts = useSelector((state: RootState) => state.config.KIAccounts);
   const KIAppKey = useSelector((state: RootState) => state.config.KIAppKey);
   const KIAppSecret = useSelector(
     (state: RootState) => state.config.KIAppSecret
   );
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [curKIAccounts, setCurKIAccounts] = useState<Account[]>([]);
   const [curKIAppKey, setCurKIAppKey] = useState<string>("");
   const [curKIAppSecret, setCurKIAppSecret] = useState<string>("");
+
+  const gridRef = useRef<Grid>(null);
+
+  const columns: OptColumn[] = useMemo(() => {
+    return [
+      {
+        name: "account",
+        header: "계좌 번호 (숫자만입력)",
+        editor: isEdit ? "text" : undefined,
+        validation: {
+          dataType: "number",
+          required: true,
+          min: 100,
+          unique: true
+        },
+        formatter: props => {
+          const valueStr = props.value?.toString() ?? "";
+          if (8 < valueStr.length) {
+            return `${valueStr.substring(0, 8)}-${valueStr.substring(8)}`;
+          }
+
+          return props.value?.toString() ?? "";
+        }
+      },
+      {
+        name: "name",
+        header: "계좌 별명",
+        editor: isEdit ? "text" : undefined
+      }
+    ];
+  }, [isEdit]);
+
+  const data = useMemo(() => {
+    return curKIAccounts.map((account, i) => ({
+      id: i,
+      ...account
+    }));
+  }, [curKIAccounts]);
+
+  useEffect(() => {
+    setCurKIAccounts(cloneDeep(KIAccounts));
+  }, [KIAccounts]);
 
   useEffect(() => {
     setCurKIAppKey(KIAppKey);
@@ -30,15 +81,55 @@ const Setting = () => {
 
   const onCancel = () => {
     setIsEdit(false);
+    setCurKIAccounts(cloneDeep(KIAccounts));
     setCurKIAppKey(KIAppKey);
     setCurKIAppSecret(KIAppSecret);
   };
 
   const onApply = async () => {
+    // 계좌번호 에러 체크
+    const invalidRows: InvalidRow[] =
+      gridRef.current?.getInstance().validate() ?? [];
+    if (!isEmpty(invalidRows)) {
+      const errStr: string[] = [];
+      const columnName = {
+        account: "계좌 번호는"
+      };
+
+      invalidRows.forEach(row => {
+        row.errors.forEach(error => {
+          error.errorInfo.forEach(errorInfo => {
+            errStr.push(
+              `row${(row.rowKey as number) + 1}: ${
+                (columnName as any)[error.columnName]
+              } ${getGridErrorStr(errorInfo)} `
+            );
+          });
+        });
+      });
+
+      alert(errStr.join("\n"));
+      return;
+    }
+
     setIsEdit(false);
+    const gridData: Account[] =
+      (gridRef.current?.getInstance().getData() as unknown as Account[]) ?? [];
     dispatch(
-      updateUserInfo({ KIAppKey: curKIAppKey, KIAppSecret: curKIAppSecret })
+      updateUserInfo({
+        KIAccounts: gridData.map(
+          data => pick(data, ["account", "name"]) as Account
+        ),
+        KIAppKey: curKIAppKey,
+        KIAppSecret: curKIAppSecret
+      })
     );
+  };
+
+  const onClickAddAccount = () => {
+    const newAccounts =
+      (gridRef.current?.getInstance().getData() as unknown as Account[]) ?? [];
+    setCurKIAccounts([...newAccounts, { account: "", name: "" }]);
   };
 
   const onClickTestKI = async () => {
@@ -73,8 +164,35 @@ const Setting = () => {
           </Card.Header>
           <Card.Body>
             <Form.Group className="mb-3">
-              <Form.Label>
-                한국투자증권 App Key{" "}
+              <Form.Label>한국투자증권 계좌</Form.Label>
+              {isEmpty(curKIAccounts) && (
+                <p>
+                  <small>등록된 계좌가 없습니다. 계좌를 등록해 주세요</small>
+                </p>
+              )}
+              {!isEmpty(curKIAccounts) && (
+                <Grid
+                  ref={gridRef}
+                  minBodyHeight={40}
+                  columns={columns}
+                  data={data}
+                />
+              )}
+              {isEdit && (
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={onClickAddAccount}
+                >
+                  계좌 추가
+                </Button>
+              )}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <div>
+                <Form.Label onClick={e => e.stopPropagation()}>
+                  한국투자증권 App Key
+                </Form.Label>
                 <Button
                   variant="outline-secondary ms-2"
                   size="sm"
@@ -83,7 +201,8 @@ const Setting = () => {
                 >
                   TEST
                 </Button>
-              </Form.Label>
+              </div>
+
               <Form.Control
                 type="text"
                 value={curKIAppKey}
