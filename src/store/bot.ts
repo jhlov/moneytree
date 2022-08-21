@@ -8,10 +8,16 @@ interface InitialState {
 
 const newBotInitialState: NewBot = {
   account: "",
+  stock: "TQQQ",
   type: "IBv2.1",
   name: "",
   seed: 1000,
-  days: 40
+  days: 40,
+  fee: 0.25,
+  start: true,
+  startNextCycle: true,
+  reinvestment: 0,
+  stopLoss: 10
 };
 
 const initialState: InitialState = {
@@ -33,12 +39,6 @@ export const config = createSlice({
         [action.payload.key]: action.payload.value
       };
     }
-    // setKIAppKey: (state, action: { payload: string }) => {
-    //   state.KIAppKey = action.payload;
-    // },
-    // setKIAppSecret: (state, action: { payload: string }) => {
-    //   state.KIAppSecret = action.payload;
-    // }
   }
 });
 

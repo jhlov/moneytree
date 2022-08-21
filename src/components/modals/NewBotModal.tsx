@@ -1,3 +1,4 @@
+import { Tooltip } from "components/Tooltip";
 import { useEffect } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +15,35 @@ const NewBotModal = (props: Props) => {
   const dispatch = useDispatch();
 
   const KIAccounts = useSelector((state: RootState) => state.config.KIAccounts);
-  // const KIAccounts: Account[] = [];
   const newBot = useSelector((state: RootState) => state.bot.newBot);
+
+  const stocks: string[] = [
+    "BNKU",
+    "BULZ",
+    "CURE",
+    "DFEN",
+    "DPST",
+    "DRN",
+    "DUSL",
+    "FAS",
+    "FNGU",
+    "HIBL",
+    "LABU",
+    "MIDU",
+    "NAIL",
+    "PILL",
+    "RETL",
+    "SOXL",
+    "TECL",
+    "TNA",
+    "TPOR",
+    "TQQQ",
+    "UDOW",
+    "UPRO",
+    "UTSL",
+    "WANT",
+    "WEBL"
+  ];
 
   useEffect(() => {
     if (props.show) {
@@ -27,7 +55,7 @@ const NewBotModal = (props: Props) => {
     props.onClose();
   };
 
-  const onChange = (key: string, value: string | number) => {
+  const onChange = (key: string, value: string | number | boolean) => {
     console.log("onChange", value);
     dispatch(setNewBot({ key, value }));
   };
@@ -76,6 +104,23 @@ const NewBotModal = (props: Props) => {
             </Col>
             <Col xs="12" sm="6">
               <Form.Group className="mb-3">
+                <Form.Label>종목</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={newBot.stock}
+                  onChange={e => onChange("stock", e.target.value)}
+                  required
+                >
+                  {stocks.map(stock => (
+                    <option key={stock} value={stock}>
+                      {stock}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col xs="12" sm="6">
+              <Form.Group className="mb-3">
                 <Form.Label>종류</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
@@ -88,26 +133,131 @@ const NewBotModal = (props: Props) => {
                   <option value="IBv2.1">무한매수 v2.1</option>
                 </Form.Select>
                 <Form.Text className="text-muted">
-                  {newBot.type === "IBv1" && (
-                    <span>We'll never share your email with anyone else.</span>
+                  {newBot.type.startsWith("IB") && (
+                    <>
+                      매수/매도 조건{" "}
+                      <Tooltip>
+                        <div className="text-start">
+                          {newBot.type === "IBv1" && (
+                            <>
+                              <div>매수</div>
+                              <div className="ms-1">
+                                - LOC평단매수: 평단 * 0.5회액수
+                              </div>
+                              <div className="ms-1">
+                                - LOC큰수매수: 현재가 +10% * 0.5회액수
+                              </div>
+                              <div>매도: 평단 +10%</div>
+                            </>
+                          )}
+                          {newBot.type === "IBv2" && (
+                            <>
+                              <div>전반 (원금소진 50% 이하)</div>
+                              <div className="ms-1">매수</div>
+                              <div className="ms-2">
+                                - LOC평단매수: 평단 * 0.5회액수
+                              </div>
+                              <div className="ms-2">
+                                - LOC큰수매수: 평단 +5% * 0.5회액수
+                              </div>
+                              <div className="ms-1">매도: 평단 +10%</div>
+                              <hr className="my-1" />
+                              <div>후반 (원금소진 50% 이상)</div>
+                              <div className="ms-1">매수</div>
+                              <div className="ms-2">
+                                - LOC평단매수: 평단 * 1회액수
+                              </div>
+                              <div className="ms-1">매도</div>
+                              <div className="ms-2">- 평단 +5%</div>
+                              <div className="ms-2">- 평단 +10%</div>
+                            </>
+                          )}
+                          {newBot.type === "IBv2.1" && (
+                            <>
+                              <div>전반 (원금소진 50% 이하)</div>
+                              <div className="ms-1">매수</div>
+                              <div className="ms-2">
+                                - LOC평단매수: 평단 * 0.5회액수
+                              </div>
+                              <div className="ms-2">
+                                - LOC큰수매수: 평단 +5% * 0.5회액수
+                              </div>
+                              <div className="ms-1">매도</div>
+                              <div className="ms-2">
+                                - 평단 +5% LOC매도 (전체물량 25%)
+                              </div>
+                              <div className="ms-2">
+                                - 평단 +10% 지정가매도 (전체물량 75%)
+                              </div>
+                              <hr className="my-1" />
+                              <div>후반 (원금소진 50% 이상)</div>
+                              <div className="ms-1">매수</div>
+                              <div className="ms-2">
+                                - LOC평단매수: 평단 * 1회액수
+                              </div>
+                              <div className="ms-1">매도</div>
+                              <div className="ms-2">
+                                - 평단 +0% LOC매도 (전체물량 25%)
+                              </div>
+                              <div className="ms-2">
+                                - 평단 +5% 지정가매도 (전체물량 25%)
+                              </div>
+                              <div className="ms-2">
+                                - 평단 +1% 지정가매도 (전체물량 50%)
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </Tooltip>
+                    </>
                   )}
                 </Form.Text>
               </Form.Group>
             </Col>
+            <Col xs="12" sm="6">
+              <Form.Group className="mb-3">
+                <Form.Label>투자금($)</Form.Label>
+                <Form.Control
+                  type="number"
+                  min="1"
+                  value={newBot.seed}
+                  onChange={e => onChange("seed", Number(e.target.value))}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col xs="12" sm="6">
+              <Form.Group className="mb-3">
+                <Form.Label>수수료(%)</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={newBot.fee}
+                  onChange={e => onChange("fee", Number(e.target.value))}
+                  required
+                />
+                <Form.Text>매도시 수수료*2 를 더해 매도합니다.</Form.Text>
+              </Form.Group>
+            </Col>
+            <Col xs="12" sm="6">
+              <Form.Group className="mb-3">
+                <Form.Label>수익 재투자(%)</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={newBot.reinvestment}
+                  onChange={e =>
+                    onChange("reinvestment", Number(e.target.value))
+                  }
+                  required
+                />
+                <Form.Text>
+                  매도 시, 수익에서 지정한 비율만큼 시드에 추가합니다.
+                </Form.Text>
+              </Form.Group>
+            </Col>
+
+            {/* 무한매수 관련 설정 */}
             {newBot.type.startsWith("IB") && (
               <>
-                <Col xs="12" sm="6">
-                  <Form.Group className="mb-3">
-                    <Form.Label>투자금($)</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min="1"
-                      value={newBot.seed}
-                      onChange={e => onChange("seed", Number(e.target.value))}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
                 <Col xs="12" sm="6">
                   <Form.Group className="mb-3">
                     <Form.Label>분할 일수</Form.Label>
@@ -120,8 +270,48 @@ const NewBotModal = (props: Props) => {
                     />
                   </Form.Group>
                 </Col>
+                <Col xs="12" sm="6">
+                  <Form.Group className="mb-3">
+                    <Form.Label>손절 진행 비율(%)</Form.Label>
+                    <Form.Control
+                      type="number"
+                      value={newBot.stopLoss}
+                      onChange={e =>
+                        onChange("stopLoss", Number(e.target.value))
+                      }
+                      required
+                    />
+                    <Form.Text>
+                      원금 전체 소진 후, 손실 비율이 지정한 값 이하일 경우,
+                      손절합니다. 손절을 원하지 않으면 0으로 설정하세요.
+                    </Form.Text>
+                  </Form.Group>
+                </Col>
+                <Col xs="12" sm="6">
+                  <Form.Group className="mb-3">
+                    <Form.Check
+                      type="checkbox"
+                      label="싸이클 종료(매도 or 손절) 후 계속 진행"
+                      checked={newBot.startNextCycle}
+                      onChange={e =>
+                        onChange("startNextCycle", e.target.checked)
+                      }
+                    />
+                  </Form.Group>
+                </Col>
               </>
             )}
+
+            <Col xs="12" sm="6">
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="봇 생성 후 바로 실행"
+                  checked={newBot.start}
+                  onChange={e => onChange("start", e.target.checked)}
+                />
+              </Form.Group>
+            </Col>
           </Row>
           <div className="d-flex justify-content-end">
             <Button variant="secondary" onClick={handleClose}>
