@@ -45,6 +45,12 @@ const NewBotModal = (props: Props) => {
     "WEBL"
   ];
 
+  const stopLosses = [
+    ["10% 이내 손절", "WITHIN_10"],
+    ["10% 이내 손절/10% 이상 쿼터 손절", "WITHIN_10_QUARTER_STOP_LOSS"],
+    ["손절 없음", "NONE"]
+  ];
+
   useEffect(() => {
     if (props.show) {
       dispatch(initNewBot());
@@ -61,6 +67,8 @@ const NewBotModal = (props: Props) => {
   };
 
   const onSubmit = () => {
+    console.log("onSubmit");
+    // TODO: 벨리데이션 체크
     return false;
   };
 
@@ -216,10 +224,12 @@ const NewBotModal = (props: Props) => {
             </Col>
             <Col xs="12" sm="6">
               <Form.Group className="mb-3">
-                <Form.Label>투자금($)</Form.Label>
+                <Form.Label>
+                  투자금($) <small>(1000~)</small>
+                </Form.Label>
                 <Form.Control
                   type="number"
-                  min="1"
+                  min="1000"
                   value={newBot.seed}
                   onChange={e => onChange("seed", Number(e.target.value))}
                   required
@@ -235,14 +245,18 @@ const NewBotModal = (props: Props) => {
                   onChange={e => onChange("fee", Number(e.target.value))}
                   required
                 />
-                <Form.Text>매도시 수수료*2 를 더해 매도합니다.</Form.Text>
+                <Form.Text>매도 시, 수수료*2 를 더해 매도합니다.</Form.Text>
               </Form.Group>
             </Col>
             <Col xs="12" sm="6">
               <Form.Group className="mb-3">
-                <Form.Label>수익 재투자(%)</Form.Label>
+                <Form.Label>
+                  수익 재투자(%) <small>(0~100)</small>
+                </Form.Label>
                 <Form.Control
                   type="number"
+                  min="0"
+                  max="100"
                   value={newBot.reinvestment}
                   onChange={e =>
                     onChange("reinvestment", Number(e.target.value))
@@ -260,10 +274,13 @@ const NewBotModal = (props: Props) => {
               <>
                 <Col xs="12" sm="6">
                   <Form.Group className="mb-3">
-                    <Form.Label>분할 일수</Form.Label>
+                    <Form.Label>
+                      분할 일수 <small>(1~100)</small>
+                    </Form.Label>
                     <Form.Control
                       type="number"
                       min="1"
+                      max="100"
                       value={newBot.days}
                       onChange={e => onChange("days", Number(e.target.value))}
                       required
@@ -272,19 +289,19 @@ const NewBotModal = (props: Props) => {
                 </Col>
                 <Col xs="12" sm="6">
                   <Form.Group className="mb-3">
-                    <Form.Label>손절 진행 비율(%)</Form.Label>
-                    <Form.Control
-                      type="number"
+                    <Form.Label>손절</Form.Label>
+                    <Form.Select
+                      aria-label="Default select example"
                       value={newBot.stopLoss}
-                      onChange={e =>
-                        onChange("stopLoss", Number(e.target.value))
-                      }
+                      onChange={e => onChange("stopLoss", e.target.value)}
                       required
-                    />
-                    <Form.Text>
-                      원금 전체 소진 후, 손실 비율이 지정한 값 이하일 경우,
-                      손절합니다. 손절을 원하지 않으면 0으로 설정하세요.
-                    </Form.Text>
+                    >
+                      {stopLosses.map(arr => (
+                        <option key={arr[1]} value={arr[1]}>
+                          {arr[0]}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
                 </Col>
                 <Col xs="12" sm="6">
