@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getKIAccountWithDash } from "scripts/utils";
 import { RootState } from "store";
 import { createBot, initNewBot, setNewBot } from "store/bot";
+import { useConfig } from "store/useConfig";
 
 interface Props {
   show: boolean;
@@ -14,7 +15,7 @@ interface Props {
 const NewBotModal = (props: Props) => {
   const dispatch = useDispatch();
 
-  const KIAccounts = useSelector((state: RootState) => state.config.KIAccounts);
+  const { KIAccounts } = useConfig();
   const newBot = useSelector((state: RootState) => state.bot.newBot);
 
   const stocks: string[] = [

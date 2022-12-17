@@ -8,17 +8,18 @@ import { Dashboard } from "pages/Dashboard";
 import { Login } from "pages/Login";
 import { Setting } from "pages/Setting";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { HashRouter, Redirect, Route } from "react-router-dom";
 import { GetUserInfoResponse } from "scripts/responses";
 import { api } from "services/api";
-import { setGrade, setIsLogin, setUserEmail } from "store/auth";
-import { setKIAccounts, setKIAppKey, setKIAppSecret } from "store/config";
+import { useAuth } from "store/useAuth";
+import { useConfig } from "store/useConfig";
 import "./App.scss";
 
 function App() {
   const isMobile = false;
-  const dispatch = useDispatch();
+
+  const { setGrade, setIsLogin, setUserEmail } = useAuth();
+  const { setKIAccounts, setKIAppKey, setKIAppSecret } = useConfig();
 
   const auth = getAuth();
 
@@ -29,8 +30,8 @@ function App() {
   }, []);
 
   const onAuthStateChanged = async () => {
-    dispatch(setIsLogin(!isNil(auth.currentUser)));
-    dispatch(setUserEmail(auth.currentUser?.email ?? ""));
+    setIsLogin(!isNil(auth.currentUser));
+    setUserEmail(auth.currentUser?.email ?? "");
 
     if (auth.currentUser?.uid && auth.currentUser?.email) {
       // 사용자 등급 받아오기
@@ -39,17 +40,17 @@ function App() {
       );
 
       if (r.status === 200) {
-        dispatch(setGrade(r.data.grade));
-        dispatch(setKIAccounts(r.data.KIAccounts ?? []));
-        dispatch(setKIAppKey(r.data.KIAppKey ?? ""));
-        dispatch(setKIAppSecret(r.data.KIAppSecret ?? ""));
+        setGrade(r.data.grade);
+        setKIAccounts(r.data.KIAccounts ?? []);
+        setKIAppKey(r.data.KIAppKey ?? "");
+        setKIAppSecret(r.data.KIAppSecret ?? "");
       } else {
         alert(r.data.error);
       }
     } else {
-      dispatch(setGrade("NOT_LOGIN"));
-      dispatch(setKIAppKey(""));
-      dispatch(setKIAppSecret(""));
+      setGrade("NOT_LOGIN");
+      setKIAppKey("");
+      setKIAppSecret("");
     }
   };
 

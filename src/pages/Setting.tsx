@@ -3,27 +3,19 @@ import Grid from "@toast-ui/react-grid";
 import { cloneDeep, isEmpty, pick } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { RemoveAccountRenderer } from "scripts/classes";
 import { Account } from "scripts/interfaces";
 import { TestKIResponse } from "scripts/responses";
 import { getGridErrorStr, getKIAccountWithDash } from "scripts/utils";
 import { api } from "services/api";
-import { RootState } from "store";
-import { updateUserInfo } from "store/config";
+import { useConfig } from "store/useConfig";
 import "tui-grid/dist/tui-grid.css";
 import { OptColumn } from "tui-grid/types/options";
 import { InvalidRow } from "tui-grid/types/store/data";
 import "./Setting.scss";
 
 const Setting = () => {
-  const dispatch = useDispatch();
-
-  const KIAccounts = useSelector((state: RootState) => state.config.KIAccounts);
-  const KIAppKey = useSelector((state: RootState) => state.config.KIAppKey);
-  const KIAppSecret = useSelector(
-    (state: RootState) => state.config.KIAppSecret
-  );
+  const { KIAccounts, KIAppKey, KIAppSecret, updateUserInfo } = useConfig();
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [curKIAccounts, setCurKIAccounts] = useState<Partial<Account>[]>([]);
@@ -134,12 +126,10 @@ const Setting = () => {
     setIsEdit(false);
     const gridData: Account[] =
       (gridRef.current?.getInstance().getData() as unknown as Account[]) ?? [];
-    dispatch(
-      updateUserInfo({
-        KIAccounts: gridData.map(data => pick(data, ["account", "name"])),
-        KIAppKey: curKIAppKey,
-        KIAppSecret: curKIAppSecret
-      })
+    updateUserInfo(
+      gridData.map(data => pick(data, ["account", "name"])),
+      curKIAppKey,
+      curKIAppSecret
     );
   };
 

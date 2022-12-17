@@ -5,13 +5,11 @@ import React from "react";
 import { Badge, Container, Nav, Navbar } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { useSelector } from "react-redux";
-import { RootState } from "store";
+import { useAuth } from "store/useAuth";
 import "./Header.scss";
 
 const Header = () => {
-  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-  const userEmail = useSelector((state: RootState) => state.auth.userEmail);
+  const { isLogin, userEmail } = useAuth();
 
   const onLogout = (e: React.MouseEvent) => {
     e.preventDefault();
