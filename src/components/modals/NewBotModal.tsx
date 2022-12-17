@@ -1,10 +1,8 @@
 import { Tooltip } from "components/Tooltip";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { getKIAccountWithDash } from "scripts/utils";
-import { RootState } from "store";
-import { createBot, initNewBot, setNewBot } from "store/bot";
+import { useBot } from "store/useBot";
 import { useConfig } from "store/useConfig";
 
 interface Props {
@@ -13,10 +11,8 @@ interface Props {
 }
 
 const NewBotModal = (props: Props) => {
-  const dispatch = useDispatch();
-
   const { KIAccounts } = useConfig();
-  const newBot = useSelector((state: RootState) => state.bot.newBot);
+  const { newBot, createBot, initNewBot, setNewBot } = useBot();
 
   const stocks: string[] = [
     "BNKU",
@@ -54,7 +50,7 @@ const NewBotModal = (props: Props) => {
 
   useEffect(() => {
     if (props.show) {
-      dispatch(initNewBot());
+      initNewBot();
     }
   }, [props.show]);
 
@@ -64,12 +60,13 @@ const NewBotModal = (props: Props) => {
 
   const onChange = (key: string, value: string | number | boolean) => {
     console.log("onChange", value);
-    dispatch(setNewBot({ key, value }));
+    setNewBot({ key, value });
   };
 
-  const onSubmit = () => {
-    console.log("onSubmit");
-    dispatch(createBot(newBot));
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("onSubmit", e);
+    createBot(newBot);
     handleClose();
   };
 
