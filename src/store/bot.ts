@@ -1,5 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Bot, NewBot } from "scripts/interfaces";
+import { api } from "services/api";
 
 interface InitialState {
   botList: Bot[];
@@ -25,6 +26,17 @@ const initialState: InitialState = {
   newBot: newBotInitialState
 };
 
+export const createBot = createAsyncThunk(
+  "createBot",
+  async (newBot: NewBot) => {
+    const r = await api.put("https://testapi.com", {
+      newBot
+    });
+
+    return r.data;
+  }
+);
+
 export const config = createSlice({
   name: "bot",
   initialState,
@@ -39,6 +51,18 @@ export const config = createSlice({
         [action.payload.key]: action.payload.value
       };
     }
+  },
+  extraReducers: builder => {
+    builder.addCase(createBot.fulfilled, (state, action) => {
+      // if (action.payload.error) {
+      //   alert(action.payload.error);
+      // } else {
+      //   state.KIAccounts = action.payload.KIAccounts;
+      //   state.KIAppKey = action.payload.KIAppKey;
+      //   state.KIAppSecret = action.payload.KIAppSecret;
+      //   alert("환경설정 수정 성공");
+      // }
+    });
   }
 });
 

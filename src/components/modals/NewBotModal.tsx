@@ -4,7 +4,7 @@ import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getKIAccountWithDash } from "scripts/utils";
 import { RootState } from "store";
-import { initNewBot, setNewBot } from "store/bot";
+import { createBot, initNewBot, setNewBot } from "store/bot";
 
 interface Props {
   show: boolean;
@@ -68,8 +68,8 @@ const NewBotModal = (props: Props) => {
 
   const onSubmit = () => {
     console.log("onSubmit");
-    // TODO: 벨리데이션 체크
-    return false;
+    dispatch(createBot(newBot));
+    handleClose();
   };
 
   return (
@@ -89,6 +89,7 @@ const NewBotModal = (props: Props) => {
                   onChange={e => onChange("account", e.target.value)}
                   required
                 >
+                  <option value="">선택하세요.</option>
                   {KIAccounts.map(account => (
                     <option key={account.account} value={account.account}>
                       {getKIAccountWithDash(account.account)} ({account.name})
