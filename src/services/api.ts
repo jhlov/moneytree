@@ -2,12 +2,11 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 import { isEmpty } from "lodash";
 import qs from "qs";
-import store from "store";
-import { setLoading } from "store/common";
+import { useCommon } from "store/useCommon";
 
 export const api = {
   get: async <T>(url: string, params?: object) => {
-    store.dispatch(setLoading(true));
+    useCommon.setState({ isLoading: true });
 
     const auth = getAuth();
 
@@ -27,11 +26,11 @@ export const api = {
       alert((e as any).response?.data.error ?? (e as any).message);
       return Promise.reject();
     } finally {
-      store.dispatch(setLoading(false));
+      useCommon.setState({ isLoading: false });
     }
   },
   put: async <T>(url: string, data?: object) => {
-    store.dispatch(setLoading(true));
+    useCommon.setState({ isLoading: true });
 
     const auth = getAuth();
 
@@ -49,11 +48,11 @@ export const api = {
       alert((e as any).response?.data.error ?? (e as any).message);
       return Promise.reject();
     } finally {
-      store.dispatch(setLoading(false));
+      useCommon.setState({ isLoading: false });
     }
   },
   post: async <T>(url: string, data?: object) => {
-    store.dispatch(setLoading(true));
+    useCommon.setState({ isLoading: true });
 
     const auth = getAuth();
 
@@ -71,7 +70,7 @@ export const api = {
       alert((e as any).response?.data.error ?? (e as any).message);
       return Promise.reject();
     } finally {
-      store.dispatch(setLoading(false));
+      useCommon.setState({ isLoading: false });
     }
   }
 };
