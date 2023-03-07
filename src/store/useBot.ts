@@ -1,27 +1,28 @@
-import { Bot, NewBot } from "scripts/interfaces";
+import { Bot } from "scripts/interfaces";
 import create from "zustand";
 
-const newBotInitialState: NewBot = {
+const newBotInitialState: Bot = {
   account: "",
   stock: "TQQQ",
   type: "IBv2.1",
   name: "",
   seed: 1000,
   days: 40,
+  stopLossDays: 40,
   fee: 0.25,
   start: true,
   startNextCycle: true,
   reinvestment: 0,
-  stopLoss: 10,
+  stopLoss: "QUARTER_STOP_LOSS",
   status: "WAITING"
 };
 
 interface BotState {
   botList: Bot[];
-  newBot: NewBot;
+  newBot: Bot;
   initNewBot: () => void;
   setNewBot: (payload: { key: string; value: any }) => void;
-  createBot: (payload: NewBot) => void;
+  createBot: (payload: Bot) => void;
 }
 
 export const useBot = create<BotState>(set => ({

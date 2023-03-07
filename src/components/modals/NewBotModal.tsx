@@ -139,6 +139,7 @@ const NewBotModal = (props: Props) => {
                   <option value="IBv1">무한매수 v1</option>
                   <option value="IBv2">무한매수 v2</option>
                   <option value="IBv2.1">무한매수 v2.1</option>
+                  <option value="0458">떨사오팔</option>
                 </Form.Select>
                 <Form.Text className="text-muted">
                   {newBot.type.startsWith("IB") && (
@@ -275,7 +276,7 @@ const NewBotModal = (props: Props) => {
                 <Col xs="12" sm="6">
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      분할 일수 <small>(1~100)</small>
+                      분할일 <small>(1~100)</small>
                     </Form.Label>
                     <Form.Control
                       type="number"
@@ -313,6 +314,44 @@ const NewBotModal = (props: Props) => {
                       onChange={e =>
                         onChange("startNextCycle", e.target.checked)
                       }
+                    />
+                  </Form.Group>
+                </Col>
+              </>
+            )}
+
+            {/* 떨사오팔 관련 설정 */}
+            {newBot.type === "0458" && (
+              <>
+                <Col xs="12" sm="6">
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      분할일 <small>(1~100)</small>
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={newBot.days}
+                      onChange={e => onChange("days", Number(e.target.value))}
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+                <Col xs="12" sm="6">
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      손절일 <small>(1~100)</small>
+                    </Form.Label>
+                    <Form.Control
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={newBot.stopLossDays}
+                      onChange={e =>
+                        onChange("stopLossDays", Number(e.target.value))
+                      }
+                      required
                     />
                   </Form.Group>
                 </Col>
