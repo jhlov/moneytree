@@ -12,7 +12,8 @@ const newBotInitialState: NewBot = {
   start: true,
   startNextCycle: true,
   reinvestment: 0,
-  stopLoss: 10
+  stopLoss: 10,
+  status: "WAITING"
 };
 
 interface BotState {

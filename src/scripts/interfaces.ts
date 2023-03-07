@@ -1,4 +1,5 @@
 export type BotType = "IBv1" | "IBv2" | "IBv2.1";
+export type BotStatus = "WAITING" | "RUNNING" | "PAUSE";
 
 export interface Account {
   id?: number;
@@ -25,4 +26,5 @@ export interface NewBot {
   startNextCycle: boolean; // 싸이클 종료 후 다시 시작할지 여부
   reinvestment: number; // 재투자 비율
   stopLoss: number; // 손절 비율
+  status: BotStatus;
 }

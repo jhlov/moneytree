@@ -43,8 +43,9 @@ const NewBotModal = (props: Props) => {
   ];
 
   const stopLosses = [
-    ["10% 이내 손절", "WITHIN_10"],
-    ["10% 이내 손절/10% 이상 쿼터 손절", "WITHIN_10_QUARTER_STOP_LOSS"],
+    ["쿼터 손절", "QUARTER_STOP_LOSS"],
+    // ["10% 이내 손절", "WITHIN_10"],
+    // ["10% 이내 손절/10% 이상 쿼터 손절", "WITHIN_10_QUARTER_STOP_LOSS"],
     ["손절 없음", "NONE"]
   ];
 
@@ -307,7 +308,7 @@ const NewBotModal = (props: Props) => {
                   <Form.Group className="mb-3">
                     <Form.Check
                       type="checkbox"
-                      label="싸이클 종료(매도 or 손절) 후 계속 진행"
+                      label="싸이클 종료 후 계속 진행"
                       checked={newBot.startNextCycle}
                       onChange={e =>
                         onChange("startNextCycle", e.target.checked)
