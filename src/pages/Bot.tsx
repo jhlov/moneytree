@@ -10,6 +10,10 @@ const Bot = () => {
     setShowNewBotModal(true);
   };
 
+  const onSuccessCreateBot = () => {
+    console.log("success");
+  };
+
   return (
     <>
       <div className="d-grid">
@@ -21,6 +25,7 @@ const Bot = () => {
       <NewBotModal
         show={showNewBotModal}
         onClose={() => setShowNewBotModal(false)}
+        onSuccess={onSuccessCreateBot}
       />
     </>
   );

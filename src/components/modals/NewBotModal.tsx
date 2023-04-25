@@ -8,6 +8,7 @@ import { useConfig } from "store/useConfig";
 interface Props {
   show: boolean;
   onClose: () => void;
+  onSuccess: () => void;
 }
 
 const NewBotModal = (props: Props) => {
@@ -60,15 +61,17 @@ const NewBotModal = (props: Props) => {
   };
 
   const onChange = (key: string, value: string | number | boolean) => {
-    console.log("onChange", value);
-    setNewBot({ key, value });
+    console.log("onChange", key, value);
+    setNewBot(key, value);
   };
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("onSubmit", e);
-    createBot(newBot);
     handleClose();
+    createBot(newBot).then(() => {
+      props.onSuccess();
+    });
   };
 
   return (
@@ -136,9 +139,9 @@ const NewBotModal = (props: Props) => {
                   onChange={e => onChange("type", e.target.value)}
                   required
                 >
-                  <option value="IBv1">무한매수 v1</option>
+                  {/* <option value="IBv1">무한매수 v1</option>
                   <option value="IBv2">무한매수 v2</option>
-                  <option value="IBv2.1">무한매수 v2.1</option>
+                  <option value="IBv2.1">무한매수 v2.1</option> */}
                   <option value="0458">떨사오팔</option>
                 </Form.Select>
                 <Form.Text className="text-muted">
@@ -363,8 +366,10 @@ const NewBotModal = (props: Props) => {
                 <Form.Check
                   type="checkbox"
                   label="봇 생성 후 바로 실행"
-                  checked={newBot.start}
-                  onChange={e => onChange("start", e.target.checked)}
+                  checked={newBot.status === "RUNNING"}
+                  onChange={e =>
+                    onChange("status", e.target.checked ? "RUNNING" : "PAUSE")
+                  }
                 />
               </Form.Group>
             </Col>
