@@ -9,6 +9,7 @@ export interface Account {
 }
 
 export interface Bot {
+  id?: number; // 서버에서 생성한 봇 id
   account: string; // 계좌
   stock: string; // 종목
   type: BotType; // 전략 종류

@@ -24,6 +24,7 @@ interface BotState {
   initNewBot: () => void;
   setNewBot: (key: string, value: any) => void;
   createBot: (newBot: Bot) => Promise<any>;
+  getBotList: () => void;
 }
 
 export const useBot = create<BotState>(set => ({
@@ -72,5 +73,17 @@ export const useBot = create<BotState>(set => ({
     console.log(r);
 
     return Promise.resolve();
+  },
+  getBotList: async () => {
+    const r = await api.get<Bot[]>(
+      "https://tyakjjn4xi.execute-api.ap-northeast-2.amazonaws.com/default/mt-get-bot-list"
+    );
+    if (r.status === 200) {
+      set(state => ({
+        botList: r.data
+      }));
+    } else {
+      alert("봇 리스트 로드 실패");
+    }
   }
 }));
