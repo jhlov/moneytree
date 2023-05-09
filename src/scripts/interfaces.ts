@@ -22,4 +22,7 @@ export interface Bot {
   reinvestment: number; // 재투자 비율
   stopLoss: StopLossStatus; // 손절방법 (무한매수)
   status: BotStatus;
+
+  // 서버에서 추가된 데이터
+  createdDate?: string;
 }

@@ -1,0 +1,11 @@
+.bot {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  &__add-btn {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+  }
+}

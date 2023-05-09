@@ -1,8 +1,10 @@
+import { BotCard } from "components/BotCard";
 import { NewBotModal } from "components/modals/NewBotModal";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useAuth } from "store/useAuth";
 import { useBot } from "store/useBot";
+import "./Bot.scss";
 
 const Bot = () => {
   const [showNewBotModal, setShowNewBotModal] = useState(false);
@@ -27,12 +29,19 @@ const Bot = () => {
 
   return (
     <>
-      <div className="d-grid">
-        {botList.map(bot => (
-          <div key={bot.id}>{bot.name}</div>
-        ))}
+      <div className="bot">
+        {botList.map(bot => {
+          if (bot.type === "0458") {
+            return <BotCard key={bot.id} bot={bot} />;
+          }
+        })}
 
-        <Button variant="primary" size="lg" onClick={onClickAddBot}>
+        <Button
+          className="bot__add-btn"
+          variant="outline-primary"
+          size="lg"
+          onClick={onClickAddBot}
+        >
           + 봇 생성
         </Button>
       </div>
